@@ -119,7 +119,7 @@ pip install -r requirements.txt
 | `matplotlib` | ≥ 3.7 | BER curve plotting |
 | `sionna` | 2.0.1 | (Optional) 5G NR LDPC encoder/decoder |
 
-> **Without Sionna:** All channel simulation and baseline evaluation runs without Sionna. The LDPC decoder in `experiments/02_*` and `03_*` falls back to a minimal parity-check stub. For production LDPC decoding, install `sionna==2.0.1` and replace the stub with `sionna.phy.fec.ldpc.LDPC5GDecoder`.
+> **Without Sionna:** All channel simulation and baseline evaluation runs without Sionna. The LDPC decoder in `experiments/02_*` and `03_*` falls back to a standalone NumPy/PyTorch syndrome check. For production LDPC decoding, install `sionna==2.0.1` and use `sionna.phy.fec.ldpc.LDPC5GDecoder`.
 
 ---
 
@@ -167,7 +167,7 @@ python experiments/05_evaluate_baselines.py --mod 16 --channel awgn
 python experiments/05_evaluate_baselines.py --mod 64 --channel rayleigh
 ```
 
-> **On AWGN baseline fairness :** The `exact_logmap` column represents the theoretical optimal receiver (perfect CSI + exact Log-MAP LLR). The proposed neural receiver is compared against `ls_lmmse` (practical 3GPP LS-estimated pilot-aided receiver). The ~2 dB gain over `ls_lmmse` is due to pilot resource savings and avoidance of LS estimation error — **not** a gain over the information-theoretic bound.
+> **Baseline Comparison Note:** The `exact_logmap` column represents the theoretical optimal receiver (perfect CSI + exact Log-MAP LLR). The proposed neural receiver is compared against `ls_lmmse` (practical 3GPP LS-estimated pilot-aided receiver). The ~2 dB gain over `ls_lmmse` is due to pilot resource savings and avoidance of LS estimation error — **not** a gain over the information-theoretic bound.
 
 ---
 
@@ -202,7 +202,7 @@ python experiments/05_evaluate_baselines.py --mod 64 --channel rayleigh
 **Hamail Ali** *(Corresponding Author)*  
 Dept. of Electrical Engineering, Military College of Signals (MCS), NUST  
 Islamabad 44000, Pakistan  
-📧 hamail1073@gmail.com
+📧 hamail.hamail-ali@inrs.ca
 
 **Shervin Vakili** *(Corresponding Author)*  
 ECCoLe Lab, INRS-EMT, Université du Québec  

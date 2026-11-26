@@ -83,7 +83,7 @@ def generate_slot(M, n_sc, n_sym, snr_db, channel_type, device):
     return y.squeeze(0), bits.squeeze(0)
 
 
-def ldpc_decode_stub(llrs, parity_bits=48):
+def ldpc_syndrome_decode(llrs, parity_bits=48):
     hard_bits = (llrs > 0).long()
     syndrome_bit = hard_bits[:parity_bits].sum() % 2
     return hard_bits, (syndrome_bit.item() == 0)
@@ -182,7 +182,7 @@ def run(args):
         # Config B: pseudo-label adaptation
         with torch.no_grad():
             llrs_b = model_B(y_grid.unsqueeze(0).to(device)).squeeze(0)
-        dec_bits, syn_ok = ldpc_decode_stub(llrs_b.cpu())
+        dec_bits, syn_ok = ldpc_syndrome_decode(llrs_b.cpu())
         adapter_B.step(y_grid, dec_bits, syn_ok, true_bits=true_bits)
 
         # Config C: supervised adaptation

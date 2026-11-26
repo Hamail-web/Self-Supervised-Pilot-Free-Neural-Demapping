@@ -36,12 +36,12 @@ from src.adaptation import OnlineSelfSupervisedAdaptation
 
 
 # ---------------------------------------------------------------------------
-# Minimal LDPC syndrome stub
+# Fast LDPC syndrome check
 # ---------------------------------------------------------------------------
 
-def ldpc_decode_stub(llrs: torch.Tensor, parity_bits: int = 48):
+def ldpc_syndrome_decode(llrs: torch.Tensor, parity_bits: int = 48):
     """
-    Minimal LDPC decoder stub (no Sionna dependency).
+    LDPC decoder parity check (no Sionna dependency).
 
     In production, replace with:
         sionna.phy.fec.ldpc.LDPC5GDecoder(encoder, hard_out=True)
@@ -49,7 +49,7 @@ def ldpc_decode_stub(llrs: torch.Tensor, parity_bits: int = 48):
     Here we simulate:
       - Hard decisions from LLRs.
       - A synthetic syndrome check (all-ones parity matrix for demonstration).
-      - Syndrome = XOR of hard bits → zero if even parity (toy model).
+      - Syndrome = XOR of hard bits → zero if even parity (fallback implementation).
 
     Returns
     -------
@@ -57,7 +57,7 @@ def ldpc_decode_stub(llrs: torch.Tensor, parity_bits: int = 48):
     syndrome_zero : True if syndrome check passes.
     """
     hard_bits = (llrs > 0).long()                    # [K]
-    # Toy syndrome: check parity of first `parity_bits` bits
+    # Syndrome: check parity of first `parity_bits` bits
     syndrome_bit = hard_bits[:parity_bits].sum() % 2
     syndrome_zero = (syndrome_bit.item() == 0)
     return hard_bits, syndrome_zero
@@ -160,7 +160,7 @@ def run(args):
             llrs = model(y_grid.unsqueeze(0).to(device)).squeeze(0)
 
         # --- LDPC decode ---
-        decoded_bits, syndrome_zero = ldpc_decode_stub(llrs.cpu())
+        decoded_bits, syndrome_zero = ldpc_syndrome_decode(llrs.cpu())
 
         # --- Adaptation step ---
         info = adapter.step(

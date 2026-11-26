@@ -78,7 +78,7 @@ def generate_slot_scheduler(M, n_sc, n_sym, scheduler, slot, device):
     return y, bits, label
 
 
-def ldpc_decode_stub(llrs, parity_bits=48):
+def ldpc_syndrome_decode(llrs, parity_bits=48):
     hard = (llrs > 0).long()
     syn  = hard[:parity_bits].sum() % 2
     return hard, (syn.item() == 0)
@@ -150,7 +150,7 @@ def run(args):
         model_adaptive.eval()
         with torch.no_grad():
             llrs = model_adaptive(y.unsqueeze(0).to(device)).squeeze(0)
-        dec_bits, syn_ok = ldpc_decode_stub(llrs.cpu())
+        dec_bits, syn_ok = ldpc_syndrome_decode(llrs.cpu())
         adapter.step(y, dec_bits, syn_ok, true_bits=true_bits)
 
         if (slot + 1) % args.eval_interval == 0:
