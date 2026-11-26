@@ -219,14 +219,14 @@ The demapping network $f_{\theta}(\cdot)$ processes the received 2-D grid $\math
 \small
 \begin{algorithmic}[1]
 \REQUIRE Received grids $\{\mathbf{Y}_t\}$, LDPC matrix $\mathbf{H}_{\text{LDPC}}$, replay memory $\mathcal{B}$, demapper $f_\theta$, learning rate $\eta$.
-\STATE \textbf{Initialization:} Run $T_w$ synthetic warmup slots across $E_b/N_0 \in [8, 18]$~dB.
+\STATE \textbf{Initialization:} Load pretrained checkpoint $\theta_0$ (supervised training on synthetic OFDM data, $E_b/N_0\in[8,18]$~dB). Online self-supervised updates then adapt $\theta$ during deployment without ground-truth labels.
 \FOR{each incoming slot $t=1,2,\dots$}
   \STATE Compute soft LLRs: $\hat{\bm{\Lambda}}_t = f_\theta(\mathbf{Y}_t)$
   \STATE Obtain hard bit estimates: $\hat{\mathbf{c}}_{\text{raw}} = \tfrac{1}{2}(1 + \operatorname{sgn}(\hat{\bm{\Lambda}}_t))$
   \STATE Decode with BP ($N_{\text{iter}}=20$): $\hat{\mathbf{u}}_t, \hat{\mathbf{c}}_t = \text{BP\_Decode}(\hat{\bm{\Lambda}}_t)$
   \STATE Check syndrome: $\mathbf{s}_t = \mathbf{H}_{\text{LDPC}}\hat{\mathbf{c}}_t^{\top} \pmod 2$
   \STATE Calculate bit disagreement: $\delta_t = \frac{1}{n} \|\hat{\mathbf{c}}_{\text{raw}} - \hat{\mathbf{c}}_t\|_1$
-  \IF{$\mathbf{s}_t = \mathbf{0}$ \AND $\delta_t \leq \varepsilon_{\text{thresh}}$ ($\varepsilon=0.30$)}
+  \IF{$\mathbf{s}_t = \mathbf{0}$ \AND $\delta_t \leq \varepsilon_{\text{thresh}}$ ($\varepsilon=0.12$)}
     \STATE Append sample to buffer: $\mathcal{B} \leftarrow \mathcal{B} \cup \{(\mathbf{Y}_t, \hat{\mathbf{c}}_t)\}$
   \ENDIF
   \IF{$|\mathcal{B}| \geq B_{\min}$}
@@ -240,7 +240,7 @@ The demapping network $f_{\theta}(\cdot)$ processes the received 2-D grid $\math
 
 \subsection{Syndrome-Directed $\Delta$-Loop and Replay Memory}
 
-Algorithm~\ref{alg:delta_loop} describes the online adaptation mechanism. The standard LDPC parity-check relation, $\mathbf{H}_{\text{LDPC}}\hat{\mathbf{c}}^{\top}=\mathbf{0}$, verifies whether a decoded block is a valid codeword. Because the probability of an undetected error for 5G NR LDPC codes is bounded below $10^{-7}$, a zero syndrome provides a dependable confirmation of correct decoding.
+Algorithm~\ref{alg:delta_loop} describes the online adaptation mechanism. The standard LDPC parity-check relation, $\mathbf{H}_{\text{LDPC}}\hat{\mathbf{c}}^{\top}=\mathbf{0}$, verifies whether a decoded block is a valid codeword. A zero syndrome is a necessary but not sufficient condition for correct decoding; an incorrect codeword may still satisfy the parity-check constraints (an undetected error event). Gate~2 (Hamming disagreement $\delta_t \le \varepsilon$) provides an additional empirical safeguard against such events.
 
 To avoid learning from unreliable frames, an acceptance filter checks the discrepancy $\delta_t$ between raw hard decisions $\hat{\mathbf{c}}_{\text{raw}}$ and BP-decoded bits $\hat{\mathbf{c}}_t$. If $\delta_t \le 0.30$ and the syndrome is zero, the pair $(\mathbf{Y}_t, \hat{\mathbf{c}}_t)$ enters the replay memory $\mathcal{B}$. Mini-batch sampling from $\mathcal{B}$ reduces temporal correlation across consecutive slots, preventing catastrophic forgetting during channel variations.
 
@@ -298,7 +298,7 @@ Anchor Overhead         & 14.29\% & ---      & \textbf{2.10\%} & $85.3\%$ reduct
 \end{table}
 
 \textbf{AWGN Regime (16-QAM and 64-QAM):}
-As shown in Fig.~\ref{fig:master_results}(a), the pilot-free ResCNN reaches error-free transmission ($\text{BER}=0$) at $E_b/N_0 = 6.0$~dB for 16-QAM, whereas the classical 3GPP receiver requires 8.0~dB. This corresponds to a $2.0$~dB coding gain while eliminating the $14.29\%$ pilot overhead. For 64-QAM (Fig.~\ref{fig:master_results}(b)), where adjacent constellation distances are smaller ($d_{\min}=2/\sqrt{42}$), the neural demapper attains zero post-FEC error at 8.0~dB, outperforming the classical receiver (10.0~dB) by 2.0~dB. The model-driven baseline \cite{ye2018} exhibits an error floor above 20~dB due to uncoded regression inaccuracies.
+As shown in Fig.~\ref{fig:master_results}(a), the pilot-free ResCNN reaches error-free transmission ($\text{BER}=0$) at $E_b/N_0 = 6.0$~dB for 16-QAM, whereas the conventional 3GPP LS-estimated pilot-aided receiver requires 8.0~dB. This \textbf{2.0~dB gain is stated relative to the LS/LMMSE baseline}—not to the information-theoretic exact Log-MAP bound, which the neural receiver closely approaches to within $\approx0.1$~dB (see Section~\ref{sec:results}). The gain arises from (i)~elimination of 14.3\% pilot overhead and (ii)~avoidance of LS estimation noise that degrades the conventional soft demapper.
 
 \textbf{Rayleigh Multipath Fading:}
 Fig.~\ref{fig:master_results}(c) confirms the rotational symmetry ambiguity: without a reference, blind demapping stagnates at $\text{BER} \approx 0.50$. Incorporating the ultra-sparse $2.1\%$ phase anchor eliminates the quadrant ambiguity and enables error-free decoding from 10.0~dB. In comparison, the classical 3GPP baseline requires 24.0~dB to achieve zero post-FEC error under identical block-fading conditions.
