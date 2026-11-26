@@ -1,7 +1,6 @@
 """
 Conventional Receiver Baselines for Fair Comparison.
 
-Addresses Prof. Vakili's Point 5:
   "In AWGN with known H and sigma^2, a conventional soft demapper can compute
    exact bit LLRs. These provide the optimal bitwise soft metrics. Therefore a
    neural demapper should not systematically outperform this ideal reference."

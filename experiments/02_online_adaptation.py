@@ -8,7 +8,6 @@ Demonstrates Algorithm 1 from the paper:
   - Continuously fine-tune the model using admitted pseudo-labels.
   - Evaluate BER every `eval_interval` slots.
 
-This experiment addresses Prof. Vakili's Points 1 & 2:
   • Pseudo-label threshold tightened to 0.12 (not 0.30).
   • Starts from a *pretrained* model; online self-supervised adaptation
     without requiring ground-truth labels during deployment.
@@ -143,7 +142,7 @@ def run(args):
         update_interval=32,
         mini_batch_size=16,
         buffer_capacity=2048,
-        epsilon_thresh=0.12,       # Tightened per Prof. Vakili's feedback
+        epsilon_thresh=0.12,
         device=device,
     )
 

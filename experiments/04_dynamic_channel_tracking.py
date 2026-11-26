@@ -1,5 +1,5 @@
 """
-Experiment 04 – Dynamic Channel Tracking (Addresses Prof. Vakili's Point 4).
+Experiment 04 – Dynamic Channel Tracking .
 
 Demonstrates that the online self-supervised adaptation recovers BER after
 a *sudden* channel transition during operation — without ground-truth labels.

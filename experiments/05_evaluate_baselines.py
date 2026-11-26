@@ -1,5 +1,5 @@
 """
-Experiment 05 – Full BER Curves with All Baselines (Addresses Prof. Vakili's Point 5).
+Experiment 05 – Full BER Curves with All Baselines .
 
 Generates complete BER vs. SNR curves for:
 

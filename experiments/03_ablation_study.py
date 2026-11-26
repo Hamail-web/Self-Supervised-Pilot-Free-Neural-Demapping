@@ -1,5 +1,5 @@
 """
-Experiment 03 – Ablation Study (Addresses Prof. Vakili's Point 3).
+Experiment 03 – Ablation Study .
 
 Compares three configurations, all starting from the same pretrained checkpoint:
 

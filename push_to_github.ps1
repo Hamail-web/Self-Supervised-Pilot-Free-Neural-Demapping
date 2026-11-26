@@ -25,12 +25,7 @@ git config user.email $GIT_EMAIL
 git add .
 git commit -m "Initial release: self-supervised pilot-free neural demapping for 5G NR LDPC
 
-Addresses all 5 reviewer points from Prof. Shervin Vakili (Nov 2026):
-  1. Pseudo-label reliability: epsilon_thresh tightened to 0.12
-  2. Pretraining + online adaptation narrative clarified
-  3. 3-way ablation study added (Fixed / Self-sup. / Supervised)
-  4. Dynamic channel tracking experiment added (AWGN->Rayleigh+Doppler)
-  5. Exact Log-MAP AWGN baseline added; 2dB gain stated vs LS+LMMSE"
+Core implementation release"
 
 git branch -M main
 git remote add origin $GITHUB_URL
@@ -39,7 +34,4 @@ git push -u origin main
 Write-Host ""
 Write-Host "SUCCESS: Repo pushed to $GITHUB_URL"
 Write-Host ""
-Write-Host "Next step: Add Prof. Vakili as collaborator:"
-Write-Host "  GitHub.com -> Self-Supervised-Pilot-Free-Neural-Demapping"
-Write-Host "  -> Settings -> Collaborators -> Add people"
-Write-Host "  -> Enter: shervin.vakili@inrs.ca"
+

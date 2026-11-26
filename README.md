@@ -99,7 +99,7 @@ For each received OFDM block y:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/HamailAli-INRS/Self-Supervised-Pilot-Free-Neural-Demapping.git
+git clone https://github.com/Hamail-web/Self-Supervised-Pilot-Free-Neural-Demapping.git
 cd Self-Supervised-Pilot-Free-Neural-Demapping
 
 # 2. Create virtual environment
@@ -167,7 +167,7 @@ python experiments/05_evaluate_baselines.py --mod 16 --channel awgn
 python experiments/05_evaluate_baselines.py --mod 64 --channel rayleigh
 ```
 
-> **On AWGN baseline fairness (Prof. Vakili's Point 5):** The `exact_logmap` column represents the theoretical optimal receiver (perfect CSI + exact Log-MAP LLR). The proposed neural receiver is compared against `ls_lmmse` (practical 3GPP LS-estimated pilot-aided receiver). The ~2 dB gain over `ls_lmmse` is due to pilot resource savings and avoidance of LS estimation error — **not** a gain over the information-theoretic bound.
+> **On AWGN baseline fairness :** The `exact_logmap` column represents the theoretical optimal receiver (perfect CSI + exact Log-MAP LLR). The proposed neural receiver is compared against `ls_lmmse` (practical 3GPP LS-estimated pilot-aided receiver). The ~2 dB gain over `ls_lmmse` is due to pilot resource savings and avoidance of LS estimation error — **not** a gain over the information-theoretic bound.
 
 ---
 
@@ -188,7 +188,7 @@ python experiments/05_evaluate_baselines.py --mod 64 --channel rayleigh
 
 | Parameter | Value | File | Notes |
 |-----------|-------|------|-------|
-| `epsilon_thresh` | **0.12** | `adaptation.py` | Disagreement gate (tightened from initial 0.30) |
+| `epsilon_thresh` | **0.12** | `adaptation.py` | Disagreement gate  |
 | `update_interval` | 32 | `adaptation.py` | Gradient step every N admitted pseudo-labels |
 | `hidden_dim` | 64 | `models.py` | ResCNN feature channels |
 | `num_res_blocks` | 4 | `models.py` | Residual blocks in backbone |
@@ -199,7 +199,7 @@ python experiments/05_evaluate_baselines.py --mod 64 --channel rayleigh
 
 ## 🏢 Authors
 
-**Hamail Ali**  
+**Hamail Ali** *(Corresponding Author)*  
 Dept. of Electrical Engineering, Military College of Signals (MCS), NUST  
 Islamabad 44000, Pakistan  
 📧 hamail1073@gmail.com

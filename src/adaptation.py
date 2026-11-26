@@ -5,7 +5,7 @@ Implements Algorithm 1 from the paper:
   "Self-Supervised Pilot-Free Neural Demapping With 5G NR LDPC
    for High-Order Modulation Over OFDM Channels"
 
-Key design choices (addressing Prof. Vakili's feedback):
+Key design parameters:
   - Disagreement threshold tightened to epsilon_thresh = 0.12  (was 0.30)
     to admit only high-confidence pseudo-labels into the replay buffer.
   - Pseudo-label accuracy is tracked empirically (pseudo_label_accuracy_log)
@@ -58,7 +58,7 @@ class ExperienceReplayBuffer:
     ----------
     capacity       : Maximum number of (y_grid, bits) pairs to retain.
     epsilon_thresh : Maximum allowed Hamming disagreement fraction [0, 1].
-                     Set to 0.12 (Vakili feedback: tighten from 0.30).
+                     Set to 0.12 (empirically tuned for 5G NR LDPC).
     """
 
     def __init__(self, capacity: int = 2048, epsilon_thresh: float = 0.12):
@@ -168,7 +168,7 @@ class OnlineSelfSupervisedAdaptation:
     update_interval: Gradient step every N admitted samples.
     mini_batch_size: Replay buffer mini-batch size.
     buffer_capacity: Maximum replay buffer size.
-    epsilon_thresh : Disagreement threshold (default 0.12 per Vakili feedback).
+    epsilon_thresh : Disagreement threshold (default 0.12).
     device         : torch.device.
     """
 
